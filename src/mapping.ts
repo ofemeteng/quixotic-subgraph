@@ -1,62 +1,64 @@
-import { BigInt } from "@graphprotocol/graph-ts"
 import {
-  Exchange,
-  OwnershipTransferred,
-  Paused,
-  SellOrderFilled,
-  Unpaused
+  OwnershipTransferred as OwnershipTransferredEvent,
+  Paused as PausedEvent,
+  SellOrderFilled as SellOrderFilledEvent,
+  Unpaused as UnpausedEvent
 } from "../generated/Exchange/Exchange"
-import { ExampleEntity } from "../generated/schema"
+import { OwnershipTransferred, Paused, SellOrderFilled, Unpaused } from "../generated/schema"
 
-export function handleOwnershipTransferred(event: OwnershipTransferred): void {
-  // Entities can be loaded from the store using a string ID; this ID
-  // needs to be unique across all entities of the same type
-  let entity = ExampleEntity.load(event.transaction.from.toHex())
+export function handleOwnershipTransferred(event: OwnershipTransferredEvent): void {
+  // Create a OwnershipTransferred entity, using the hexadecimal string representation
+  // of the transaction hash as the entity ID
+  let id = event.transaction.hash.toHex()
+  let OwnershipTransferredEntity = new OwnershipTransferred(id)
 
-  // Entities only exist after they have been saved to the store;
-  // `null` checks allow to create entities on demand
-  if (entity == null) {
-    entity = new ExampleEntity(event.transaction.from.toHex())
+  // Set properties on the OwnershipTransferredEntity, using the event parameters
+  OwnershipTransferredEntity.previousOwner = event.params.previousOwner
+  OwnershipTransferredEntity.newOwner = event.params.newOwner
 
-    // Entity fields can be set using simple assignments
-    entity.count = BigInt.fromI32(0)
-  }
-
-  // BigInt and BigDecimal math are supported
-  entity.count = entity.count + BigInt.fromI32(1)
-
-  // Entity fields can be set based on event parameters
-  entity.previousOwner = event.params.previousOwner
-  entity.newOwner = event.params.newOwner
-
-  // Entities can be written to the store with `.save()`
-  entity.save()
-
-  // Note: If a handler doesn't require existing field values, it is faster
-  // _not_ to load the entity from the store. Instead, create it fresh with
-  // `new Entity(...)`, set the fields that should be updated and save the
-  // entity back to the store. Fields that were not set or unset remain
-  // unchanged, allowing for partial updates to be applied.
-
-  // It is also possible to access smart contracts from mappings. For
-  // example, the contract that has emitted the event can be connected to
-  // with:
-  //
-  // let contract = Contract.bind(event.address)
-  //
-  // The following functions can then be called on this contract to access
-  // state variables and other data:
-  //
-  // - contract.getRoyaltyPayoutAddress(...)
-  // - contract.getRoyaltyPayoutRate(...)
-  // - contract.isAddressFrozen(...)
-  // - contract.isOrderCancelled(...)
-  // - contract.owner(...)
-  // - contract.paused(...)
+  // Save the OwnershipTransferredEntity to the store
+  OwnershipTransferredEntity.save()
 }
 
-export function handlePaused(event: Paused): void {}
+export function handlePaused(event: PausedEvent): void {
+  // Create a Paused entity, using the hexadecimal string representation
+  // of the transaction hash as the entity ID
+  let id = event.transaction.hash.toHex()
+  let PausedEntity = new Paused(id)
 
-export function handleSellOrderFilled(event: SellOrderFilled): void {}
+  // Set properties on the PausedEntity, using the event parameters
+  PausedEntity.account = event.params.account
 
-export function handleUnpaused(event: Unpaused): void {}
+  // Save the PausedEntity to the store
+  PausedEntity.save()
+}
+
+export function handleSellOrderFilled(event: SellOrderFilledEvent): void {
+  // Create a SellOrderFilled entity, using the hexadecimal string representation
+  // of the transaction hash as the entity ID
+  let id = event.transaction.hash.toHex()
+  let SellOrderFilledEntity = new SellOrderFilled(id)
+
+  // Set properties on the SellOrderFilledEntity, using the event parameters
+  SellOrderFilledEntity.seller = event.params.seller
+  SellOrderFilledEntity.buyer = event.params.buyer
+  SellOrderFilledEntity.erc721address = event.params.erc721address
+  SellOrderFilledEntity.tokenId = event.params.tokenId
+  SellOrderFilledEntity.price = event.params.price
+
+  // Save the SellOrderFilledEntity to the store
+  SellOrderFilledEntity.save()
+}
+
+export function handleUnpaused(event: UnpausedEvent): void {
+  // Create a Unpaused entity, using the hexadecimal string representation
+  // of the transaction hash as the entity ID
+  let id = event.transaction.hash.toHex()
+  let UnpausedEntity = new Unpaused(id)
+
+  // Set properties on the UnpausedEntity, using the event parameters
+  UnpausedEntity.account = event.params.account
+
+  // Save the UnpausedEntity to the store
+  UnpausedEntity.save()
+}

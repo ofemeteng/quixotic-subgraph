@@ -1,6 +1,6 @@
 specVersion: 0.0.2
 schema:
-  file: ./schema.graphql
+  file: schema.graphql
 dataSources:
   - kind: ethereum/contract
     name: Exchange
@@ -19,7 +19,7 @@ dataSources:
         - Unpaused
       abis:
         - name: Exchange
-          file: ./abis/Exchange.json
+          file: Exchange/abis/Exchange.json
       eventHandlers:
         - event: OwnershipTransferred(indexed address,indexed address)
           handler: handleOwnershipTransferred
@@ -29,4 +29,4 @@ dataSources:
           handler: handleSellOrderFilled
         - event: Unpaused(address)
           handler: handleUnpaused
-      file: ./src/mapping.ts
+      file: Exchange/Exchange.wasm
