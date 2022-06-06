@@ -1,0 +1,32 @@
+specVersion: 0.0.1
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: Exchange
+    network: optimism
+    source:
+      address: "0xE5c7b4865D7f2B08FaAdF3F6d392E6D6Fa7B903C"
+      abi: Exchange
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.2
+      language: wasm/assemblyscript
+      entities:
+        - OwnershipTransferred
+        - Paused
+        - SellOrderFilled
+        - Unpaused
+      abis:
+        - name: Exchange
+          file: ./abis/Exchange.json
+      eventHandlers:
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: Paused(address)
+          handler: handlePaused
+        - event: SellOrderFilled(indexed address,address,indexed address,indexed uint256,uint256)
+          handler: handleSellOrderFilled
+        - event: Unpaused(address)
+          handler: handleUnpaused
+      file: ./src/mapping.ts
